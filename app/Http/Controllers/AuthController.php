@@ -29,8 +29,16 @@ class AuthController extends Controller
         if(!$user){
             throw ValidationException::withMessage(['message' => 'Invalid credentials']);
         }
-            
-        return response()->json(['user' => $user, 'token' => $user->createToken('api_token')->plainTextToken], 200);
+
+        $expiresAt = now()->addMinutes(
+            config('sanctum:expiration')
+        ); // Token expires in 60 minutes
+                    
+        return response()
+            ->json(['user' => $user, 
+                'token' => $user->createToken('api_token')->plainTextToken,
+                'expires_at' => $expiresAt->timestamp * 1000,
+                ], 200);
         
 
     }
