@@ -27,7 +27,11 @@ class AuthController extends Controller
         $user = $this->authService->login($userData);
 
         if(!$user){
-            throw ValidationException::withMessage(['message' => 'Invalid credentials']);
+            return response()->json(
+                [
+                    'message' => 'Invalid credentials',
+                    'status' => 401,
+                ], 401);
         }
 
         $expiresAt = now()->addMinutes(
